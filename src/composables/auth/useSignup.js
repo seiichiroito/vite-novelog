@@ -9,7 +9,10 @@ import {
   TwitterAuthProvider,
   updateProfile,
 } from "firebase/auth";
-import { auth, actionCodeSettings } from "../../firebase/config";
+import { auth, actionCodeSettings, functions } from "../../firebase/config";
+
+import { httpsCallable } from "firebase/functions";
+
 const error = ref(null);
 const isPending = ref(null);
 
@@ -31,6 +34,10 @@ const signupWithEmailAndPassword = async ({ email, password, displayName }) => {
     await updateProfile(auth.currentUser, {
       displayName,
     });
+
+    const updateUserProfile = httpsCallable(functions, "updateUserProfile");
+
+    updateUserProfile({ displayName });
 
     await sendLink();
 

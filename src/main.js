@@ -5,11 +5,15 @@ import router from "./router";
 
 import "primeicons/primeicons.css";
 import "./assets/index.css";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase/config";
 
-const app = createApp(App);
+let app;
 
-app.use(store);
+onAuthStateChanged(auth, () => {
+  if (app) {
+    return;
+  }
 
-app.use(router);
-
-app.mount("#app");
+  app = createApp(App).use(store).use(router).mount("#app");
+});

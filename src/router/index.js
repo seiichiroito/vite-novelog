@@ -54,6 +54,11 @@ const routes = [
     component: () => import("../views/auth/Signup.vue"),
     beforeEnter: unRequiredAuth,
   },
+  {
+    path: "/confirmation",
+    name: "EmailConfirmation",
+    component: () => import("../views/auth/EmailConfirmation.vue"),
+  },
 ];
 
 const router = createRouter({

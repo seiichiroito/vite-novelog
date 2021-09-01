@@ -74,13 +74,13 @@
       </div>
       <p class="text-center">or</p>
       <div class="flex justify-center gap-4 text-4xl">
-        <button class="p-2">
+        <button class="p-2" @click="submitOAuthHandler('google')">
           <i class="pi pi-google text-2xl text-brand-google"></i>
         </button>
-        <button class="p-2">
+        <button class="p-2" @click="submitOAuthHandler('twitter')">
           <i class="pi pi-twitter text-2xl text-brand-twitter"></i>
         </button>
-        <button class="p-2">
+        <button class="p-2" @click="submitOAuthHandler('github')">
           <i class="pi pi-github text-2xl text-brand-github"></i>
         </button>
       </div>
@@ -90,6 +90,8 @@
 
 <script setup>
 import { ref } from "@vue/reactivity";
+import { useSignup } from "../../composables/auth";
+
 const props = defineProps({
   buttonText: String,
   displayName: Boolean,
@@ -98,6 +100,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["onSubmit"]);
+
+const { error, isPending, signupWithOAuth } = useSignup();
 
 const formData = ref({});
 
@@ -114,6 +118,15 @@ if (props.password) {
 // Methods
 const submitHandler = () => {
   emit("onSubmit", formData);
+};
+
+const submitOAuthHandler = async (providerName) => {
+  try {
+    const user = await signupWithOAuth(providerName);
+    console.log(user);
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 

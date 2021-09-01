@@ -59,6 +59,18 @@ const routes = [
     name: "EmailConfirmation",
     component: () => import("../views/auth/EmailConfirmation.vue"),
   },
+  {
+    path: "/users/:userId",
+    name: "Profile",
+    component: () => import("../views/user/Profile.vue"),
+    props: true,
+  },
+  {
+    path: "/messages/:userId",
+    name: "MessageRoom",
+    component: () => import("../views/message/MessageRoom.vue"),
+    props: true,
+  },
 ];
 
 const router = createRouter({

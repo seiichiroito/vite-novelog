@@ -5,12 +5,19 @@ admin.initializeApp();
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
+const uniqueUsername = () => {
+  return Math.random().toString(36).substr(2, 9);
+};
+
 exports.newUserSignUp = functions.auth.user().onCreate((user) => {
   return admin.firestore().collection("users").doc(user.uid).set({
     displayName: user.displayName,
     email: user.email,
     photoUrl: user.photoURL,
     bio: "",
+    following: [],
+    favorites: [],
+    username: uniqueUsername(),
   });
 });
 

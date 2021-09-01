@@ -3,7 +3,7 @@
     <div
       class="h-full px-4 max-w-3xl mx-auto flex items-center justify-between"
     >
-      <button class="p-3">
+      <button class="p-3" @click="profileHandler">
         <UserIcon class="w-6" />
       </button>
       <img :src="logo" alt="logo" class="w-8" />
@@ -16,7 +16,16 @@
 
 <script setup>
 import { UserIcon, InformationCircleIcon } from "@heroicons/vue/outline";
+import { useRouter } from "vue-router";
 import logo from "../../assets/logo.png";
+
+import { getUser } from "../../composables/auth";
+const router = useRouter();
+const { currentUser } = getUser();
+
+const profileHandler = () => {
+  router.push({ name: "Profile", params: { userId: currentUser.value.uid } });
+};
 </script>
 
 <style></style>

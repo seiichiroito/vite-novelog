@@ -1,9 +1,9 @@
 <template>
   <li class="flex border gap-4 px-4 items-center">
-    <button>
+    <button @click="profileHandler">
       <img
-        v-if="author?.photoUrl"
-        :src="author.photoUrl"
+        v-if="novel.author.photoUrl"
+        :src="novel.author.photoUrl"
         alt="novel"
         class="w-12 h-12 rounded-full object-cover"
       />
@@ -15,8 +15,8 @@
         onClick="{moveToDetailHandler}"
       >
         <div class="flex items-center">
-          <p class="font-bold p-2">{{ author?.displayName }}</p>
-          <p class="text-gray-400 text-sm">@</p>
+          <p class="font-bold p-2">{{ novel.author.displayName }}</p>
+          <p class="text-gray-400 text-sm">@{{ novel.author.username }}</p>
         </div>
         <p class="text-gray-400 text-sm">{{ novel.createdAt }}</p>
       </button>
@@ -38,7 +38,7 @@
         </button>
         <div class="flex gap-4">
           <button
-            v-if="novel.favorited.includes(author?.id)"
+            v-if="novel.favorited.includes(currentUser.uid)"
             class="py-3 flex gap-1 items-center text-gray-500"
           >
             <HertIconSolid class="w-4 text-red-400" />
@@ -62,14 +62,21 @@
 <script setup>
 import { HeartIcon, ChatAltIcon } from "@heroicons/vue/outline";
 import { HeartIcon as HertIconSolid } from "@heroicons/vue/solid";
+import { useRouter } from "vue-router";
 
 import { getDocument } from "../../composables/firestore";
+import { getUser } from "../../composables/auth";
+
+const { currentUser } = getUser();
 
 const props = defineProps({
   novel: Object,
 });
 
-const { document: author, error } = getDocument("users", props.novel.authorId);
+const router = useRouter();
+const profileHandler = () => {
+  router.push({ name: "Profile", params: { userId: props.novel.author.id } });
+};
 </script>
 
 <style></style>

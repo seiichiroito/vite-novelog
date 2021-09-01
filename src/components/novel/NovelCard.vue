@@ -1,0 +1,75 @@
+<template>
+  <li class="flex border gap-4 px-4 items-center">
+    <button>
+      <img
+        v-if="author?.photoUrl"
+        :src="author.photoUrl"
+        alt="novel"
+        class="w-12 h-12 rounded-full object-cover"
+      />
+      <div v-else class="w-12 h-12 rounded-full object-cover bg-gray-300"></div>
+    </button>
+    <div class="flex-1 grid">
+      <button
+        class="flex justify-between items-center"
+        onClick="{moveToDetailHandler}"
+      >
+        <div class="flex items-center">
+          <p class="font-bold p-2">{{ author?.displayName }}</p>
+          <p class="text-gray-400 text-sm">@</p>
+        </div>
+        <p class="text-gray-400 text-sm">{{ novel.createdAt }}</p>
+      </button>
+      <button class="py-2 text-left" onClick="{moveToDetailHandler}">
+        {{ novel.title }}
+      </button>
+      <div class="flex items-center gap-4">
+        <button
+          class="flex flex-1 py-2 flex-wrap gap-2 max-h-20 overflow-scroll"
+          onClick="{moveToDetailHandler}"
+        >
+          <span
+            v-for="genre in novel.genre"
+            :key="genre"
+            className="border border-gray-600 text-gray-600 text-sm rounded-full px-2"
+          >
+            {{ genre }}
+          </span>
+        </button>
+        <div class="flex gap-4">
+          <button
+            v-if="novel.favorited.includes(author?.id)"
+            class="py-3 flex gap-1 items-center text-gray-500"
+          >
+            <HertIconSolid class="w-4 text-red-400" />
+            <p class="text-sm">{{ novel.favorited.length }}</p>
+          </button>
+          <button v-else class="py-3 flex gap-1 items-center text-gray-500">
+            <HeartIcon class="w-4" />
+            <p class="text-sm">{{ novel.favorited.length }}</p>
+          </button>
+
+          <button class="py-3 flex gap-1 items-center text-gray-500">
+            <ChatAltIcon class="w-3" />
+            <p class="text-sm">{{ novel.comments.length }}</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  </li>
+</template>
+
+<script setup>
+import { HeartIcon, ChatAltIcon } from "@heroicons/vue/outline";
+import { HeartIcon as HertIconSolid } from "@heroicons/vue/solid";
+
+import { getDocument } from "../../composables/firestore";
+
+const props = defineProps({
+  novel: Object,
+});
+
+const { document: author, error } = getDocument("users", props.novel.authorId);
+</script>
+
+<style></style>

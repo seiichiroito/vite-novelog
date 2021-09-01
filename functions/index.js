@@ -13,3 +13,8 @@ exports.newUserSignUp = functions.auth.user().onCreate((user) => {
     bio: "",
   });
 });
+
+exports.userDeleted = functions.auth.user().onDelete((user) => {
+  const doc = admin.firestore().collection("users").doc(user.uid);
+  return doc.delete();
+});

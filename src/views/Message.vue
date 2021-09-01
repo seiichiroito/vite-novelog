@@ -1,11 +1,18 @@
 <template>
   <Layout>
-    <MessageCard
-      v-for="[messenger, mes] in Object.entries(messages)"
-      :key="messenger"
-      :message="mes[0]"
-      :messengerId="messenger"
-    />
+    <div v-if="Object.entries(messages).length">
+      <MessageCard
+        v-for="[messenger, mes] in Object.entries(messages)"
+        :key="messenger"
+        :message="mes[0]"
+        :messengerId="messenger"
+      />
+    </div>
+    <div v-else class="h-full grid justify-center items-center">
+      <p class="text-gray-500">
+        When you start chatting, it will be showed here.
+      </p>
+    </div>
   </Layout>
 </template>
 

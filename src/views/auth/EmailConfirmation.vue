@@ -1,8 +1,10 @@
 <template>
   <Layout>
-    <div class="flex justify-center items-center">
-      <h1>Email Confirmation</h1>
-      <p>Sent a Link to your email.</p>
+    <div class="h-full grid justify-center items-center">
+      <div class="text-center grid gap-2">
+        <h1 class="text-2xl">Email Confirmation</h1>
+        <p>Confirmation link is sent to your email.</p>
+      </div>
     </div>
   </Layout>
 </template>

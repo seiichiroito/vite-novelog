@@ -37,7 +37,11 @@ const signupWithEmailAndPassword = async ({ email, password, displayName }) => {
 
     const updateUserProfile = httpsCallable(functions, "updateUserProfile");
 
-    updateUserProfile({ displayName });
+    try {
+      updateUserProfile({ displayName });
+    } catch (err) {
+      console.log(err);
+    }
 
     await sendLink();
 

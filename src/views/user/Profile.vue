@@ -19,6 +19,7 @@
           class="w-12 h-12 rounded-full"
         />
         <img
+          v-else
           :src="defaultProfile"
           alt="default"
           class="w-12 h-12 rounded-full"

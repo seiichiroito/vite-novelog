@@ -1,7 +1,5 @@
 <template>
-  <Layout>
-    <h1 class="text-green-300">Hello, Vite</h1>
-  </Layout>
+  <Layout> message </Layout>
 </template>
 
 <script setup>

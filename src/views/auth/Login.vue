@@ -8,12 +8,19 @@
 import Layout from "../../components/layout/Layout.vue";
 import AuthForm from "../../components/auth/AuthForm.vue";
 import { useLogin } from "../../composables/auth";
+import { useRouter } from "vue-router";
 
 const { error, isPending, login } = useLogin();
+const router = useRouter();
 const submitHandler = async (formData) => {
   try {
     const user = await login(formData.value);
-    console.log(user);
+
+    if (!user || error.value) {
+      return;
+    }
+
+    router.push({ name: "Home" });
   } catch (err) {
     console.log(err);
   }

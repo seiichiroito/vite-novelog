@@ -2,12 +2,17 @@
   <li className="flex border gap-4 px-4 items-center h-messageCard">
     <button @click="profileHandler">
       <img
-        v-if="messenger"
+        v-if="messenger?.photoUrl"
         :src="messenger.photoUrl"
         :alt="messenger.displayName"
         className="w-12 h-12 rounded-full object-cover"
       />
-      <div v-else class="w-12 h-12 rounded-full object-cover bg-gray-300"></div>
+      <img
+        :src="defaultProfile"
+        alt="default"
+        v-else
+        class="w-12 h-12 rounded-full object-cover"
+      />
     </button>
     <button className="flex-1 grid" @click="messageRoomHandler">
       <div className="flex justify-between items-center">
@@ -25,6 +30,7 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { getDocument } from "../../composables/firestore";
+import defaultProfile from "../../assets/default-profile.jpeg";
 
 const props = defineProps({
   message: Object,

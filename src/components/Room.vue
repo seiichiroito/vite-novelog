@@ -9,8 +9,15 @@
       <p>{{ title }}</p>
       <button class="p-3" @click="profileHandeler">
         <img
+          v-if="user?.photoUrl"
           :src="user?.photoUrl"
           :alt="user?.username"
+          class="w-8 h-8 rounded-full border-white border-2"
+        />
+        <img
+          v-else
+          :src="defaultProfile"
+          alt="default"
           class="w-8 h-8 rounded-full border-white border-2"
         />
       </button>
@@ -41,7 +48,7 @@
 import { useRouter } from "vue-router";
 import { ArrowLeftIcon } from "@heroicons/vue/outline";
 import { ref } from "@vue/reactivity";
-
+import defaultProfile from "../assets/default-profile.jpeg";
 import MainChat from "./MainChat.vue";
 
 const props = defineProps({

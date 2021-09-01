@@ -13,15 +13,16 @@
       <div class="absolute inset-0 bg-gray-300"></div>
       <div class="relative flex gap-4">
         <img
-          v-if="user"
+          v-if="user?.photoUrl"
           :src="user.photoUrl"
           :alt="user.displayName"
           class="w-12 h-12 rounded-full"
         />
-        <div
-          v-else
-          class="w-12 h-12 rounded-full object-cover bg-gray-300"
-        ></div>
+        <img
+          :src="defaultProfile"
+          alt="default"
+          class="w-12 h-12 rounded-full"
+        />
 
         <div>
           <p>{{ user?.displayName }}</p>
@@ -43,7 +44,10 @@
           Edit Profile
         </button>
         <div v-else class="flex gap-4">
-          <button class="border border-black rounded-full p-2">
+          <button
+            class="border border-black rounded-full p-2"
+            @click="messageRoomHandler"
+          >
             <ChatIcon class="w-4" />
           </button>
           <button
@@ -69,6 +73,7 @@ const props = defineProps({
 import { getDocument } from "../../composables/firestore";
 import { getUser } from "../../composables/auth";
 import { useRouter } from "vue-router";
+import defaultProfile from "../../assets/default-profile.jpeg";
 
 const router = useRouter();
 const { currentUser } = getUser();
@@ -76,6 +81,10 @@ const { document: user, error } = getDocument("users", props.userId);
 
 const backHanler = () => {
   router.go(-1);
+};
+
+const messageRoomHandler = () => {
+  router.push({ name: "MessageRoom", params: { userId: user.value.id } });
 };
 </script>
 

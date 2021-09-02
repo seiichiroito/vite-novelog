@@ -6,12 +6,12 @@
       <button class="p-3" @click="backHandler">
         <ArrowLeftIcon class="w-4" />
       </button>
-      <p>{{ title }}</p>
+      <p>{{ messenger.displayName }}</p>
       <button class="p-3" @click="profileHandeler">
         <img
-          v-if="user?.photoUrl"
-          :src="user?.photoUrl"
-          :alt="user?.username"
+          v-if="messenger.photoUrl"
+          :src="messenger.photoUrl"
+          :alt="messenger.displayName"
           class="w-8 h-8 rounded-full border-white border-2"
         />
         <img
@@ -25,7 +25,7 @@
   </header>
   <main className="bg-blue-200">
     <div className="overflow-scroll  max-w-3xl mx-auto h-main">
-      <MainChat :messages="messages" />
+      <MainChat :messages="room?.messages" />
     </div>
   </main>
   <footer className="h-16">
@@ -48,13 +48,17 @@
 import { useRouter } from "vue-router";
 import { ArrowLeftIcon } from "@heroicons/vue/outline";
 import { ref } from "@vue/reactivity";
-import defaultProfile from "../assets/default-profile.jpeg";
+import defaultProfile from "../../assets/default-profile.jpeg";
 import MainChat from "./MainChat.vue";
 
 const props = defineProps({
-  title: String,
-  user: Object,
-  messages: Array,
+  room: {
+    type: Object,
+  },
+  messenger: {
+    type: Object,
+    default: () => ({ photoUrl: "", displayName: "" }),
+  },
 });
 
 const emit = defineEmits(["onSubmit"]);
@@ -68,7 +72,10 @@ const backHandler = () => {
 };
 
 const profileHandeler = () => {
-  router.push({ name: "Profile", prams: { userId: props.user.id } });
+  router.push({
+    name: "Profile",
+    params: { userId: props.messenger.id },
+  });
 };
 
 const submitInputHandler = () => {

@@ -1,56 +1,55 @@
 <template>
-  <Room :user="messenger" :messages="messages" @onSubmit="submitHandler" />
+  <Room :room="room" @onSubmit="submitHandler" :messenger="messenger" />
 </template>
 
 <script setup>
 const props = defineProps({
-  userId: String,
+  roomId: String,
 });
-import Room from "../../components/Room.vue";
+import Room from "../../components/message/Room.vue";
 import {
   getDocument,
   getCollection,
   getDocumentRef,
+  useCollection,
 } from "../../composables/firestore";
 import { getUser } from "../../composables/auth";
-import { computed } from "@vue/reactivity";
-import { useCollection } from "../../composables/firestore";
-
-const { document: messenger } = getDocument("users", props.userId);
+import { computed, ref } from "@vue/reactivity";
+import { watch } from "@vue/runtime-core";
+import { useDocument } from "../../composables/firestore";
+import { v4 as uuid } from "uuid";
 const { currentUser } = getUser();
-
-const currentUserRef = getDocumentRef("users", currentUser.value.uid);
-const messengerRef = getDocumentRef("users", props.userId);
-
-const { documents: sentMessages, error: sendingError } = getCollection(
-  "messages",
-  ["sender", "==", currentUserRef],
-  ["receiver", "==", messengerRef]
+const { docRef: currentUserRef } = getDocumentRef(
+  "users",
+  currentUser.value.uid
 );
-const { documents: receivedMessages, error: receivedError } = getCollection(
-  "messages",
-  ["sender", "==", messengerRef],
-  ["receiver", "==", currentUserRef]
-);
+const { document: room } = getDocument("rooms", props.roomId);
 
-const messages = computed(() => {
-  return [...sentMessages.value, ...receivedMessages.value].sort(
-    (messageA, messageB) => {
-      return messageA.createdAt - messageB.createdAt;
-    }
-  );
+const messenger = computed(() => {
+  let messengerRef;
+  if (!room.value) {
+    return;
+  }
+
+  if (room.value.owners.length === 1) {
+    // Novel
+    return room.value.owners[0];
+  } else {
+    // Private Chat
+    return room.value.owners.find((owner) => {
+      return owner.id !== currentUser.value.uid;
+    });
+  }
 });
-
-const { addDocument, error, isPending } = useCollection("messages");
+const { updateField } = useDocument("rooms", props.roomId);
 
 const submitHandler = async (text) => {
   try {
-    const res = await addDocument({
+    await updateField({
+      id: uuid(),
       body: text,
-      receiver: messengerRef,
-      sender: currentUserRef,
+      senderRef: currentUserRef.value,
     });
-    console.log(res);
   } catch (err) {
     console.log(err);
   }

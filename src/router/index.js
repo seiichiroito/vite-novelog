@@ -66,7 +66,7 @@ const routes = [
     props: true,
   },
   {
-    path: "/messages/:userId",
+    path: "/messages/:roomId",
     name: "MessageRoom",
     component: () => import("../views/message/MessageRoom.vue"),
     props: true,

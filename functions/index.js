@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -40,5 +39,163 @@ exports.updateUserProfile = functions.https.onCall((data, context) => {
 
   return user.update({
     displayName: data.displayName,
+  });
+});
+
+exports.follow = functions.https.onCall(async (data, context) => {
+  // check auth
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users can follow other user"
+    );
+  }
+
+  // Restrict follow yourself
+  if (context.auth.uid === data.uid) {
+    throw new functions.https.HttpsError(
+      "cancelled",
+      "you can't follow yourself."
+    );
+  }
+
+  const user = admin.firestore().collection("users").doc(context.auth.uid);
+
+  const followUser = admin.firestore().collection("users").doc(data.uid);
+
+  const doc = await user.get();
+
+  // check if following user exists
+  if (!followUser) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "the user doesn't exist."
+    );
+  }
+
+  // check if user hasn't already followed
+  const isFollowing = doc.data().following.some((followingUser) => {
+    return followingUser.path === followUser.path;
+  });
+
+  if (isFollowing) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "you're already following this user."
+    );
+  }
+
+  return user.update({
+    following: [...doc.data().following, followUser],
+  });
+});
+
+exports.unFollow = functions.https.onCall(async (data, context) => {
+  // check auth
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users can follow other user"
+    );
+  }
+
+  // Restrict follow yourself
+  if (context.auth.uid === data.uid) {
+    throw new functions.https.HttpsError(
+      "cancelled",
+      "you can't unfollow yourself."
+    );
+  }
+
+  const user = admin.firestore().collection("users").doc(context.auth.uid);
+
+  const unFollowUser = admin.firestore().collection("users").doc(data.uid);
+
+  const doc = await user.get();
+
+  // check if following user exists
+  if (!unFollowUser) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "the user doesn't exist."
+    );
+  }
+  const updatedFollowing = doc.data().following.filter((followingUser) => {
+    followingUser.path !== unFollowUser.path;
+  });
+
+  return user.update({
+    following: updatedFollowing,
+  });
+});
+
+// Favorite Novel
+exports.favoriteNovel = functions.https.onCall(async (data, context) => {
+  // const {novelId} = data
+  // check auth
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users can favorite a novel"
+    );
+  }
+
+  const novel = admin.firestore().collection("novels").doc(data.novelId);
+
+  const doc = await novel.get();
+
+  // check if novel exists
+  if (!doc) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "the novel doesn't exist."
+    );
+  }
+
+  // check if user hasn't already followed
+  const isFavorited = doc.data().favorited.some((userId) => {
+    return userId === context.auth.uid;
+  });
+
+  if (isFavorited) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "you're already favorited this novel."
+    );
+  }
+
+  return novel.update({
+    favorited: [...doc.data().favorited, context.auth.uid],
+  });
+});
+
+// UnFavorite Novel
+exports.unFavoriteNovel = functions.https.onCall(async (data, context) => {
+  // const {novelId} = data
+  // check auth
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users can unFavorite a novel"
+    );
+  }
+
+  const novel = admin.firestore().collection("novels").doc(data.novelId);
+  const doc = await novel.get();
+
+  // check if the novel exists
+  if (!doc) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "the novel doesn't exist."
+    );
+  }
+
+  const updatedFavorited = doc.data().favorited.filter((userId) => {
+    return userId !== context.auth.uid;
+  });
+
+  return novel.update({
+    favorited: updatedFavorited,
   });
 });

@@ -40,11 +40,16 @@
           <button
             v-if="novel.favorited.includes(currentUser.uid)"
             class="py-3 flex gap-1 items-center text-gray-500"
+            @click="unFavoriteHandler"
           >
             <HertIconSolid class="w-4 text-red-400" />
             <p class="text-sm">{{ novel.favorited.length }}</p>
           </button>
-          <button v-else class="py-3 flex gap-1 items-center text-gray-500">
+          <button
+            v-else
+            class="py-3 flex gap-1 items-center text-gray-500"
+            @click="favoriteHandler"
+          >
             <HeartIcon class="w-4" />
             <p class="text-sm">{{ novel.favorited.length }}</p>
           </button>
@@ -66,6 +71,8 @@ import { useRouter } from "vue-router";
 
 import { getDocument } from "../../composables/firestore";
 import { getUser } from "../../composables/auth";
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../../firebase/config";
 
 const { currentUser } = getUser();
 
@@ -76,6 +83,26 @@ const props = defineProps({
 const router = useRouter();
 const profileHandler = () => {
   router.push({ name: "Profile", params: { userId: props.novel.author.id } });
+};
+
+const unFavoriteHandler = async () => {
+  const unFavoriteNovel = httpsCallable(functions, "unFavoriteNovel");
+  try {
+    const res = await unFavoriteNovel({ novelId: props.novel.id });
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const favoriteHandler = async () => {
+  const favoriteNovel = httpsCallable(functions, "favoriteNovel");
+  try {
+    const res = await favoriteNovel({ novelId: props.novel.id });
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 

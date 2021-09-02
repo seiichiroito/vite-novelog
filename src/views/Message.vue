@@ -1,13 +1,9 @@
 <template>
   <Layout>
-    <div v-if="Object.entries(messages).length">
-      <MessageCard
-        v-for="[messenger, mes] in Object.entries(messages)"
-        :key="messenger"
-        :message="mes[0]"
-        :messengerId="messenger"
-      />
+    <div v-if="formattedRooms?.length">
+      <RoomCard v-for="room in formattedRooms" :key="room.id" :room="room" />
     </div>
+
     <div v-else class="h-full grid justify-center items-center">
       <p class="text-gray-500">
         When you start chatting, it will be showed here.
@@ -18,41 +14,34 @@
 
 <script setup>
 import Layout from "../components/layout/Layout.vue";
-import MessageCard from "../components/message/MessageCard.vue";
+import RoomCard from "../components/message/RoomCard.vue";
 import { getCollection, getDocumentRef } from "../composables/firestore";
 import { getUser } from "../composables/auth";
 import { computed } from "@vue/reactivity";
+import { formatDistanceToNow } from "date-fns";
 const { currentUser } = getUser();
 
-// const userRef = doc(collection(db, "users"), currentUser.value.uid);
-const userRef = getDocumentRef("users", currentUser.value.uid);
-
-const { documents: sentMessages, error: sendingError } = getCollection(
-  "messages",
-  ["sender", "==", userRef]
-);
-const { documents: receivedMessages, error: receivedError } = getCollection(
-  "messages",
-  ["receiver", "==", userRef]
+const { docRef: currentUserRef } = getDocumentRef(
+  "users",
+  currentUser.value.uid
 );
 
-const messages = computed(() => {
-  const messages = {};
-  sentMessages.value.map((sentMessage) => {
-    if (!messages[sentMessage.receiver.id]) {
-      messages[sentMessage.receiver.id] = [];
-    }
-    messages[sentMessage.receiver.id].push(sentMessage);
-  });
+const { documents: myRooms } = getCollection("rooms", [
+  "owner",
+  "==",
+  currentUserRef.value,
+]);
+const { documents: subRooms } = getCollection("rooms", [
+  "subOwner",
+  "==",
+  currentUserRef.value,
+]);
 
-  receivedMessages.value.map((receivedMessage) => {
-    if (!messages[receivedMessage.sender.id]) {
-      messages[receivedMessage.sender.id] = [];
-    }
-    messages[receivedMessage.sender.id].push(receivedMessage);
-  });
-
-  return messages;
+const formattedRooms = computed(() => {
+  return [...myRooms.value, ...subRooms.value].map((room) => ({
+    ...room,
+    updatedAt: formatDistanceToNow(room.updatedAt.toDate()),
+  }));
 });
 </script>
 

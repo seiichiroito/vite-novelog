@@ -32,7 +32,7 @@
     <div class="h-full max-w-3xl mx-auto grid items-center">
       <div v-if="novelPage" class="flex gap-2 px-4 justify-between">
         <button
-          v-if="room?.favorited.includes(currentUser.uid)"
+          v-if="room?.favorited.includes(currentUser?.uid)"
           class="py-2 flex gap-1 items-center"
           @click="unFavoriteHandler"
         >
@@ -70,8 +70,8 @@ import { useRouter } from "vue-router";
 import { ArrowLeftIcon } from "@heroicons/vue/outline";
 import { ref } from "@vue/reactivity";
 import defaultProfile from "../../assets/default-profile.jpeg";
+import { onUpdated, watchEffect } from "@vue/runtime-core";
 import MainChat from "./MainChat.vue";
-import { onUpdated } from "@vue/runtime-core";
 
 const props = defineProps({
   room: {
@@ -85,6 +85,7 @@ const props = defineProps({
 });
 
 const mainChat = ref(null);
+
 onUpdated(() => {
   mainChat.value.scrollTop = mainChat.value.scrollHeight;
 });

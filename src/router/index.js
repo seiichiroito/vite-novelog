@@ -37,6 +37,12 @@ const routes = [
     beforeEnter: requiredAuth,
   },
   {
+    path: "/messages/:roomId",
+    name: "MessageRoom",
+    component: () => import("../views/message/MessageRoom.vue"),
+    props: true,
+  },
+  {
     path: "/setting",
     name: "Setting",
     component: () => import("../views/Setting.vue"),
@@ -65,12 +71,7 @@ const routes = [
     component: () => import("../views/user/Profile.vue"),
     props: true,
   },
-  {
-    path: "/messages/:roomId",
-    name: "MessageRoom",
-    component: () => import("../views/message/MessageRoom.vue"),
-    props: true,
-  },
+
   {
     path: "/novels/:novelId",
     name: "NovelRoom",

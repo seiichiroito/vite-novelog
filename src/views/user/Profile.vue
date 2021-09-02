@@ -30,7 +30,7 @@
         <p>{{ follower?.length }} follower</p>
       </div>
       <button
-        v-if="currentUser.uid === user?.id"
+        v-if="currentUser?.uid === user?.id"
         class="rounded-full border-green-400 border px-4 py-1"
       >
         Edit Profile

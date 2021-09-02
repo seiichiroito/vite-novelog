@@ -38,7 +38,7 @@
         </button>
         <div class="flex gap-4">
           <button
-            v-if="novel.favorited.includes(currentUser.uid)"
+            v-if="novel.favorited.includes(currentUser?.uid)"
             class="py-3 flex gap-1 items-center text-gray-500"
             @click="unFavoriteHandler"
           >

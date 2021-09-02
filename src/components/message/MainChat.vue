@@ -39,6 +39,7 @@
 import { computed, ref } from "@vue/reactivity";
 import defaultProfile from "../../assets/default-profile.jpeg";
 import { format } from "date-fns";
+import { onUpdated } from "@vue/runtime-core";
 
 const props = defineProps({
   messages: {

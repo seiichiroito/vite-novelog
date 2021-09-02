@@ -6,7 +6,7 @@
       <button class="p-3" @click="backHandler">
         <ArrowLeftIcon class="w-4" />
       </button>
-      <p>{{ messenger.displayName }}</p>
+      <p>{{ room?.title || messenger.displayName }}</p>
       <button class="p-3" @click="profileHandeler">
         <img
           v-if="messenger.photoUrl"
@@ -23,20 +23,41 @@
       </button>
     </div>
   </header>
-  <main className="bg-blue-200">
-    <div className="overflow-scroll  max-w-3xl mx-auto h-main" ref="mainChat">
+  <main class="bg-blue-200">
+    <div class="overflow-scroll max-w-3xl mx-auto h-main" ref="mainChat">
       <MainChat :messages="room?.messages" />
     </div>
   </main>
-  <footer className="h-16">
-    <div className="h-full max-w-3xl mx-auto grid items-center">
-      <form className="flex gap-2 px-4" @submit.prevent="submitInputHandler">
+  <footer class="h-16">
+    <div class="h-full max-w-3xl mx-auto grid items-center">
+      <div v-if="novelPage" class="flex gap-2 px-4 justify-between">
+        <button
+          v-if="room?.favorited.includes(currentUser.uid)"
+          class="py-2 flex gap-1 items-center"
+          @click="unFavoriteHandler"
+        >
+          <HeartIconSolid class="w-6 text-red-400" />
+          <p>{{ room?.favorited.length }}</p>
+        </button>
+        <button
+          v-else
+          class="py-2 flex gap-1 items-center"
+          @click="favoriteHandler"
+        >
+          <HeartIcon class="w-6" />
+          <p>{{ room?.favorited.length }}</p>
+        </button>
+        <button class="p-2 flex gap-1 items-center">
+          <i class="pi pi-play text-xl"></i>
+        </button>
+      </div>
+      <form v-else class="flex gap-2 px-4" @submit.prevent="submitInputHandler">
         <textarea
-          className="flex-1 border p-1 rounded-full resize-none"
+          class="flex-1 border p-1 rounded-full resize-none"
           rows="1"
           v-model="inputText"
         />
-        <button className="p-2">
+        <button class="p-2">
           <i class="pi pi-send text-xl"></i>
         </button>
       </form>
@@ -56,6 +77,7 @@ const props = defineProps({
   room: {
     type: Object,
   },
+  novelPage: Boolean,
   messenger: {
     type: Object,
     default: () => ({ photoUrl: "", displayName: "" }),
@@ -87,6 +109,35 @@ const profileHandeler = () => {
 const submitInputHandler = () => {
   emit("onSubmit", inputText.value);
   inputText.value = "";
+};
+
+// For Novel Room
+
+import { HeartIcon } from "@heroicons/vue/outline";
+import { HeartIcon as HeartIconSolid } from "@heroicons/vue/solid";
+import { getUser } from "../../composables/auth";
+import { functions } from "../../firebase/config";
+import { httpsCallable } from "firebase/functions";
+const { currentUser } = getUser();
+
+const unFavoriteHandler = async () => {
+  const unFavoriteNovel = httpsCallable(functions, "unFavoriteNovel");
+  try {
+    const res = await unFavoriteNovel({ novelId: props.room.id });
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const favoriteHandler = async () => {
+  const favoriteNovel = httpsCallable(functions, "favoriteNovel");
+  try {
+    const res = await favoriteNovel({ novelId: props.room.id });
+    // console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
 };
 </script>
 

@@ -2,8 +2,8 @@
   <li class="flex border gap-4 px-4 items-center">
     <button @click="profileHandler">
       <img
-        v-if="novel.author.photoUrl"
-        :src="novel.author.photoUrl"
+        v-if="novel.owner.photoUrl"
+        :src="novel.owner.photoUrl"
         alt="novel"
         class="w-12 h-12 rounded-full object-cover"
       />
@@ -12,21 +12,21 @@
     <div class="flex-1 grid">
       <button
         class="flex justify-between items-center"
-        onClick="{moveToDetailHandler}"
+        @click="novelRoomHandler"
       >
         <div class="flex items-center">
-          <p class="font-bold p-2">{{ novel.author.displayName }}</p>
-          <p class="text-gray-400 text-sm">@{{ novel.author.username }}</p>
+          <p class="font-bold p-2">{{ novel.owner.displayName }}</p>
+          <p class="text-gray-400 text-sm">@{{ novel.owner.username }}</p>
         </div>
         <p class="text-gray-400 text-sm">{{ novel.createdAt }}</p>
       </button>
-      <button class="py-2 text-left" onClick="{moveToDetailHandler}">
+      <button class="py-2 text-left" @click="novelRoomHandler">
         {{ novel.title }}
       </button>
       <div class="flex items-center gap-4">
         <button
           class="flex flex-1 py-2 flex-wrap gap-2 max-h-20 overflow-scroll"
-          onClick="{moveToDetailHandler}"
+          @click="novelRoomHandler"
         >
           <span
             v-for="genre in novel.genre"
@@ -81,10 +81,14 @@ const props = defineProps({
 });
 
 const router = useRouter();
+
 const profileHandler = () => {
-  router.push({ name: "Profile", params: { userId: props.novel.author.id } });
+  router.push({ name: "Profile", params: { userId: props.novel.owner.id } });
 };
 
+const novelRoomHandler = () => {
+  router.push({ name: "NovelRoom", params: { novelId: props.novel.id } });
+};
 const unFavoriteHandler = async () => {
   const unFavoriteNovel = httpsCallable(functions, "unFavoriteNovel");
   try {

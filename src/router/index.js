@@ -71,6 +71,12 @@ const routes = [
     component: () => import("../views/message/MessageRoom.vue"),
     props: true,
   },
+  {
+    path: "/novels/:novelId",
+    name: "NovelRoom",
+    component: () => import("../views/novel/NovelRoom.vue"),
+    props: true,
+  },
 ];
 
 const router = createRouter({

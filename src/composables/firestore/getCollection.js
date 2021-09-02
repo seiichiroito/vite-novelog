@@ -31,37 +31,18 @@ const getCollection = (collectionName, filterQuery, secondFilterQuery) => {
     async (snap) => {
       documents.value = await Promise.all(
         snap.docs.map(async (snapDoc) => {
-          let sender;
-          if (snapDoc.data().sender) {
-            const senderRef = doc(db, snapDoc.data().sender.path);
-            sender = await getDoc(senderRef);
-          }
-          let receiver;
-          if (snapDoc.data().receiver) {
-            const receiverRef = doc(db, snapDoc.data().receiver.path);
-            receiver = await getDoc(receiverRef);
-          }
-
-          let author;
-          if (snapDoc.data().authorRef) {
-            const authorRef = doc(db, snapDoc.data().authorRef.path);
-            author = await getDoc(authorRef);
+          let owner;
+          if (snapDoc.data().owner) {
+            const ownerRef = doc(db, snapDoc.data().owner.path);
+            owner = await getDoc(ownerRef);
           }
 
           return {
             id: snapDoc.id,
             ...snapDoc.data(),
-            sender: sender && {
-              id: sender.id,
-              ...sender.data(),
-            },
-            receiver: receiver && {
-              id: receiver.id,
-              ...receiver.data(),
-            },
-            author: author && {
-              id: author.id,
-              ...author.data(),
+            owner: owner && {
+              id: owner.id,
+              ...owner.data(),
             },
           };
         })

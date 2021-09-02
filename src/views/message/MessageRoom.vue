@@ -31,14 +31,14 @@ const messenger = computed(() => {
     return;
   }
 
-  if (room.value.owners.length === 1) {
-    // Novel
-    return room.value.owners[0];
-  } else {
+  if (room.value.subOwner) {
     // Private Chat
-    return room.value.owners.find((owner) => {
-      return owner.id !== currentUser.value.uid;
-    });
+    return room.value.owner.id === currentUser.value.uid
+      ? room.value.subOwner
+      : room.value.owner;
+  } else {
+    // Novel
+    return room.value.owner;
   }
 });
 const { updateField } = useDocument("rooms", props.roomId);

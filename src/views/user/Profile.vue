@@ -137,7 +137,6 @@ const messageRoomHandler = async () => {
       updatedAt: Timestamp.fromDate(new Date()),
     });
   }
-  console.log(room);
 
   router.push({ name: "MessageRoom", params: { roomId: room.id } });
 };

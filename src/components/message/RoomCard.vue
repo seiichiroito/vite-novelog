@@ -1,7 +1,6 @@
 <template>
   <li
     className="flex border gap-4 px-4 items-center h-messageCard cursor-pointer"
-    @click="messageRoomHandler"
   >
     <div @click="profileHandler">
       <img
@@ -17,7 +16,7 @@
         class="w-12 h-12 rounded-full object-cover"
       />
     </div>
-    <div className="flex-1 grid">
+    <div className="flex-1 grid" @click="messageRoomHandler">
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <p className="font-bold pr-2">{{ messenger?.displayName }}</p>
@@ -25,7 +24,7 @@
         <p class="text-gray-400 text-sm">{{ room.updatedAt }}</p>
       </div>
       <div className="pt-2 text-left">
-        {{ room.title || room.messages[room.messages.length - 1].body }}
+        {{ displayMessage }}
       </div>
     </div>
   </li>
@@ -36,6 +35,9 @@ import { useRouter } from "vue-router";
 import { getDocument, getDocumentRef } from "../../composables/firestore";
 import defaultProfile from "../../assets/default-profile.jpeg";
 import { getUser } from "../../composables/auth";
+import { computed } from "@vue/reactivity";
+const MAX_DISPLAY = 60;
+
 const props = defineProps({
   room: Object,
 });
@@ -62,6 +64,17 @@ if (props.room.subOwner) {
 }
 const { document: messenger } = getDocument("users", messengerRef.id);
 
+const displayMessage = computed(() => {
+  const lastMessage = props.room.messages[props.room.messages.length - 1].body;
+  return (
+    lastMessage.slice(0, MAX_DISPLAY) +
+    (lastMessage.length > MAX_DISPLAY ? "..." : "")
+  );
+});
+
+const profileHandler = () => {
+  router.push({ name: "Profile", params: { userId: messenger.value.id } });
+};
 const messageRoomHandler = () => {
   router.push({ name: "MessageRoom", params: { roomId: props.room.id } });
 };

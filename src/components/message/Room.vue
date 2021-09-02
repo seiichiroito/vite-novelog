@@ -24,7 +24,7 @@
     </div>
   </header>
   <main className="bg-blue-200">
-    <div className="overflow-scroll  max-w-3xl mx-auto h-main">
+    <div className="overflow-scroll  max-w-3xl mx-auto h-main" ref="mainChat">
       <MainChat :messages="room?.messages" />
     </div>
   </main>
@@ -50,6 +50,7 @@ import { ArrowLeftIcon } from "@heroicons/vue/outline";
 import { ref } from "@vue/reactivity";
 import defaultProfile from "../../assets/default-profile.jpeg";
 import MainChat from "./MainChat.vue";
+import { onUpdated } from "@vue/runtime-core";
 
 const props = defineProps({
   room: {
@@ -59,6 +60,11 @@ const props = defineProps({
     type: Object,
     default: () => ({ photoUrl: "", displayName: "" }),
   },
+});
+
+const mainChat = ref(null);
+onUpdated(() => {
+  mainChat.value.scrollTop = mainChat.value.scrollHeight;
 });
 
 const emit = defineEmits(["onSubmit"]);

@@ -25,11 +25,12 @@
             <p class="speech-bubble bg-white rounded-2xl p-2">
               {{ message.body }}
             </p>
-            <p class="text-xs text-gray-500">{{ message.createdAt }}</p>
+            <p class="text-xs text-gray-500 flex-shrink-0">
+              {{ message.createdAt }}
+            </p>
           </div>
         </div>
       </li>
-      <div ref="bottom"></div>
     </ul>
   </div>
 </template>
@@ -37,7 +38,7 @@
 <script setup>
 import { computed, ref } from "@vue/reactivity";
 import defaultProfile from "../../assets/default-profile.jpeg";
-import { formatDistanceToNow } from "date-fns";
+import { format } from "date-fns";
 
 const props = defineProps({
   messages: {
@@ -49,11 +50,9 @@ const props = defineProps({
 const formattedMessages = computed(() => {
   return props.messages.map((message) => ({
     ...message,
-    createdAt: formatDistanceToNow(message.createdAt.toDate()),
+    createdAt: format(message.createdAt.toDate(), "HH:mm"),
   }));
 });
-
-const bottom = ref(null);
 </script>
 
 <style></style>

@@ -16,18 +16,25 @@ const getDocument = (collectionName, id) => {
         error.value = "that document does not exist";
         return;
       }
-      let owners = [];
-      if (snap.data().owners) {
-        await Promise.all(
-          snap.data().owners.map(async (ownerRef) => {
-            const owner = await getDoc(ownerRef);
-            owners.push({
-              id: owner.id,
-              ...owner.data(),
-            });
-          })
-        );
+
+      let owner;
+      if (snap.data().owner) {
+        const ownerData = await getDoc(snap.data().owner);
+        owner = {
+          id: ownerData.id,
+          ...ownerData.data(),
+        };
       }
+
+      let subOwner;
+      if (snap.data().subOwner) {
+        const subOwnerData = await getDoc(snap.data().subOwner);
+        subOwner = {
+          id: subOwnerData.id,
+          ...subOwnerData.data(),
+        };
+      }
+
       let messages;
       if (snap.data().messages) {
         messages = await Promise.all(
@@ -47,8 +54,9 @@ const getDocument = (collectionName, id) => {
       document.value = {
         id: snap.id,
         ...snap.data(),
-        owners,
         messages,
+        owner,
+        subOwner,
       };
       error.value = null;
     },

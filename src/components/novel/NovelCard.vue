@@ -89,7 +89,7 @@ const unFavoriteHandler = async () => {
   const unFavoriteNovel = httpsCallable(functions, "unFavoriteNovel");
   try {
     const res = await unFavoriteNovel({ novelId: props.novel.id });
-    console.log(res);
+    // console.log(res);
   } catch (err) {
     console.log(err);
   }
@@ -99,7 +99,7 @@ const favoriteHandler = async () => {
   const favoriteNovel = httpsCallable(functions, "favoriteNovel");
   try {
     const res = await favoriteNovel({ novelId: props.novel.id });
-    console.log(res);
+    // console.log(res);
   } catch (err) {
     console.log(err);
   }

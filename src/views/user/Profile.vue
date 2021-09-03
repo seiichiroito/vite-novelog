@@ -4,8 +4,8 @@
     <div class="absolute inset-0 bg-gray-300"></div>
     <div class="relative flex gap-4">
       <img
-        v-if="user?.photoUrl"
-        :src="user.photoUrl"
+        v-if="user?.photoURL"
+        :src="user.photoURL"
         :alt="user.displayName"
         class="w-12 h-12 rounded-full"
       />

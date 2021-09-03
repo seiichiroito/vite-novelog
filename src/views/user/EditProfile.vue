@@ -18,8 +18,8 @@
       <div class="absolute inset-0 bg-gray-300"></div>
       <div class="relative flex gap-4">
         <img
-          v-if="currentUser?.photoUrl"
-          :src="currentUser.photoUrl"
+          v-if="formData.previewImage"
+          :src="formData.previewImage"
           :alt="currentUser?.displayName"
           class="w-12 h-12 rounded-full"
         />
@@ -29,6 +29,28 @@
           alt="default"
           class="w-12 h-12 rounded-full"
         />
+        <div
+          class="
+            w-12
+            h-12
+            absolute
+            flex
+            justify-center
+            bg-backdrop
+            rounded-full
+            cursor-pointer
+          "
+          @click="clickImageHandler"
+        >
+          <PhotographIcon class="w-8 text-gray-800" />
+          <input
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            @change="changeImageHandler"
+            hidden
+            ref="imageFileRef"
+          />
+        </div>
       </div>
     </div>
     <form class="p-8 grid gap-8">
@@ -44,15 +66,6 @@
         <label htmlFor="bio">bio</label>
         <textarea id="bio" class="border-b p-2" v-model="formData.bio" />
       </div>
-      <div class="flex gap-4 justify-between">
-        <label htmlFor="image">Image</label>
-        <input
-          id="image"
-          type="text"
-          class="border-b p-2"
-          v-model="formData.image"
-        />
-      </div>
     </form>
   </main>
 </template>
@@ -63,8 +76,10 @@ import { useRouter } from "vue-router";
 import defaultProfile from "../../assets/default-profile.jpeg";
 import { ref } from "@vue/reactivity";
 import { useDocument, getDocument } from "../../composables/firestore";
+import { useStorage } from "../../composables/storage";
 import { updateProfile } from "@firebase/auth";
 import { watch } from "@vue/runtime-core";
+import { PhotographIcon } from "@heroicons/vue/outline";
 const { currentUser } = getUser();
 
 const { updateDocument, error } = useDocument("users", currentUser.value.uid);
@@ -73,8 +88,10 @@ const { document: user } = getDocument("users", currentUser.value.uid);
 const formData = ref({
   displayName: currentUser.value.displayName,
   bio: "",
-  image: currentUser.value.photoURL,
+  previewImage: currentUser.value.photoURL,
 });
+
+const isPending = ref(false);
 
 const props = defineProps({
   userId: String,
@@ -93,27 +110,87 @@ watch(user, () => {
   formData.value.bio = user.value.bio;
 });
 
+const { url, filePath, uploadImage } = useStorage();
 const submitHandler = async () => {
+  const { displayName, image, bio } = formData.value;
+
+  isPending.value = true;
+
   try {
+    //   Upload Image
+    if (!image) {
+      //   Update Auth user profile
+      await updateProfile(currentUser.value, {
+        displayName: displayName,
+      });
+      // Update Firebase user profile
+      await updateDocument({
+        displayName: displayName,
+        bio: bio,
+      });
+      isPending.value = false;
+      router.go(-1);
+
+      return;
+    }
+    await uploadImage(image);
+
     //   Update Auth user profile
     await updateProfile(currentUser.value, {
-      displayName: formData.value.displayName,
-      photoURL: formData.value.image,
+      displayName: displayName,
+      photoURL: url.value,
     });
 
     // Update Firebase user profile
     await updateDocument({
-      displayName: formData.value.displayName,
-      bio: formData.value.bio,
-      photoUrl: formData.value.image,
+      displayName: displayName,
+      bio: bio,
+      photoURL: url.value,
+      photoURLPath: filePath.value,
     });
+
+    isPending.value = false;
     if (error.value) {
       throw new Error(error.value);
     }
     router.go(-1);
   } catch (err) {
+    isPending.value = false;
+
     console.log(err);
   }
+};
+
+// Image
+const imageFileRef = ref(null);
+
+const clickImageHandler = () => {
+  imageFileRef.value.click();
+};
+
+const mimeTypes = ["image/png", "image/jpeg", "image/jpg"];
+const maxSize = 5 * 1024 * 1024;
+
+const changeImageHandler = (e) => {
+  const [file] = e.target.files;
+
+  if (!file) {
+    return;
+  }
+
+  //   File Type validate
+
+  if (!mimeTypes.includes(file.type)) {
+    return;
+  }
+
+  // Size validate
+  if (file.size > maxSize) {
+    return;
+  }
+  formData.value.image = file;
+
+  formData.value.previewImage = URL.createObjectURL(file);
 };
 </script>
 

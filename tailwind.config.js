@@ -15,6 +15,7 @@ module.exports = {
           google: "#ea4335",
           github: "#333",
         },
+        backdrop: "#ffffff55",
       },
     },
   },

@@ -3,7 +3,7 @@
     <div
       class="h-full px-4 max-w-3xl mx-auto flex items-center justify-between"
     >
-      <button class="p-3" @click="profileHandler">
+      <button class="p-3" @click="profileHandler" v-if="currentUser">
         <UserIcon class="w-6" />
       </button>
       <img :src="logo" alt="logo" class="w-8" />

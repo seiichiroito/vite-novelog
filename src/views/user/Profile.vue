@@ -32,6 +32,7 @@
       <button
         v-if="currentUser?.uid === user?.id"
         class="rounded-full border-green-400 border px-4 py-1"
+        @click="editUserHandler"
       >
         Edit Profile
       </button>
@@ -159,6 +160,12 @@ const unFollowHandler = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+const editUserHandler = async () => {
+  router.push({
+    name: "EditProfile",
+  });
 };
 </script>
 

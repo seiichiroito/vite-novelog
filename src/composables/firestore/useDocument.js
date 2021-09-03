@@ -31,7 +31,25 @@ const useDocument = (collectionName, id) => {
     }
   };
 
-  return { error, updateField, isPending };
+  const updateDocument = async (updatedDoc) => {
+    isPending.value = true;
+    error.value = null;
+
+    const docRef = doc(db, collectionName, id);
+    try {
+      const res = await updateDoc(docRef, {
+        ...updatedDoc,
+      });
+
+      isPending.value = false;
+      return res;
+    } catch (err) {
+      error.value = err.messages;
+      isPending.value = false;
+    }
+  };
+
+  return { error, updateField, isPending, updateDocument };
 };
 
 export default useDocument;

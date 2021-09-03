@@ -76,7 +76,11 @@ const routes = [
     name: "EditProfile",
     component: () => import("../views/user/EditProfile.vue"),
   },
-
+  {
+    path: "/novels/new",
+    name: "NewNovel",
+    component: () => import("../views/novel/NewNovel.vue"),
+  },
   {
     path: "/novels/:novelId",
     name: "NovelRoom",

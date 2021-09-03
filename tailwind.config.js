@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       spacing: {
         main: "calc(100vh - 3rem - 4rem)", //minus header and footer height
-        chatShrink: "calc(50vh - 3rem - 4rem)", // minus header and footer height
+        newMain: "calc(100vh - 3rem - 3rem - 4rem)",
         half: "50vh",
         messageCard: "6rem",
       },

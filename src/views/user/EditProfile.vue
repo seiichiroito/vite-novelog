@@ -1,17 +1,9 @@
 <template>
-  <header class="h-12 sticky top-0 shadow z-10 bg-white">
-    <div
-      class="h-full px-4 max-w-3xl mx-auto flex items-center justify-between"
-    >
-      <button class="p-3" @click="cancelHandler">Cancel</button>
-      <button
-        class="px-4 py-1 border border-green-500 text-green-500 rounded-full"
-        @click="submitHandler"
-      >
-        save
-      </button>
-    </div>
-  </header>
+  <PostHeader
+    @onSubmit="submitHandler"
+    @onCancel="cancelHandler"
+    submitText="save"
+  />
 
   <main class="max-w-3xl mx-auto">
     <div class="relative h-28 p-8">
@@ -80,6 +72,7 @@ import { useStorage } from "../../composables/storage";
 import { updateProfile } from "@firebase/auth";
 import { watch } from "@vue/runtime-core";
 import { PhotographIcon } from "@heroicons/vue/outline";
+import PostHeader from "../../components/layout/PostHeader.vue";
 const { currentUser } = getUser();
 
 const { updateDocument, error } = useDocument("users", currentUser.value.uid);

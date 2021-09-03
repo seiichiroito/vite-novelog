@@ -9,8 +9,8 @@
       <p>{{ room?.title || messenger.displayName }}</p>
       <button class="p-3" @click="profileHandeler">
         <img
-          v-if="messenger.photoUrl"
-          :src="messenger.photoUrl"
+          v-if="messenger.photoURL"
+          :src="messenger.photoURL"
           :alt="messenger.displayName"
           class="w-8 h-8 rounded-full border-white border-2"
         />
@@ -55,7 +55,7 @@
         <textarea
           class="flex-1 border p-1 rounded-full resize-none"
           rows="1"
-          v-model="inputText"
+          v-model.trim="inputText"
         />
         <button class="p-2">
           <i class="pi pi-send text-xl"></i>
@@ -108,6 +108,10 @@ const profileHandeler = () => {
 };
 
 const submitInputHandler = () => {
+  if (inputText.value === "") {
+    return;
+  }
+
   emit("onSubmit", inputText.value);
   inputText.value = "";
 };

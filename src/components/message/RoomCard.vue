@@ -4,8 +4,8 @@
   >
     <div @click="profileHandler">
       <img
-        v-if="messenger?.photoUrl"
-        :src="messenger.photoUrl"
+        v-if="messenger?.photoURL"
+        :src="messenger.photoURL"
         :alt="messenger.displayName"
         className="w-12 h-12 rounded-full object-cover"
       />
@@ -32,7 +32,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { getDocument, getDocumentRef } from "../../composables/firestore";
+import { getDocument } from "../../composables/firestore";
 import defaultProfile from "../../assets/default-profile.jpeg";
 import { getUser } from "../../composables/auth";
 import { computed } from "@vue/reactivity";
@@ -44,17 +44,13 @@ const props = defineProps({
 const router = useRouter();
 
 const { currentUser } = getUser();
-const { docRef: currentUserRef } = getDocumentRef(
-  "users",
-  currentUser.value.uid
-);
 
 let messengerRef;
 if (props.room.subOwner) {
   // Private Chat
 
   messengerRef =
-    props.room.owner.path === currentUserRef.value.path
+    props.room.owner.id === currentUser.value.uid
       ? props.room.subOwner
       : props.room.owner;
 } else {

@@ -2,8 +2,8 @@
   <li class="flex border gap-4 px-4 items-center">
     <button @click="profileHandler">
       <img
-        v-if="novel.owner.photoUrl"
-        :src="novel.owner.photoUrl"
+        v-if="novel.owner.photoURL"
+        :src="novel.owner.photoURL"
         alt="novel"
         class="w-12 h-12 rounded-full object-cover"
       />

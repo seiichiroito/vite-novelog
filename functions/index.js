@@ -13,7 +13,7 @@ exports.newUserSignUp = functions.auth.user().onCreate((user) => {
   return admin.firestore().collection("users").doc(user.uid).set({
     displayName: user.displayName,
     email: user.email,
-    photoUrl: user.photoURL,
+    photoURL: user.photoURL,
     bio: "",
     following: [],
     favorites: [],

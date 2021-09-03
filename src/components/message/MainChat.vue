@@ -7,8 +7,8 @@
         :key="message.id"
       >
         <img
-          v-if="message.sender?.photoUrl"
-          :src="message.sender?.photoUrl"
+          v-if="message.sender?.photoURL"
+          :src="message.sender?.photoURL"
           :alt="message.sender?.displayName"
           class="w-8 h-8 rounded-full"
         />

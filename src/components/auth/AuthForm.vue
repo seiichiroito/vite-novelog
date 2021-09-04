@@ -59,7 +59,7 @@
         <router-link
           :to="{ name: 'Signup' }"
           type="button"
-          class="text-green-600 p-2"
+          class="text-green-600 p-2 appearance-none"
           >Signup</router-link
         >
       </div>

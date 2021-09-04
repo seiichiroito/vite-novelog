@@ -4,29 +4,7 @@
     @onCancel="cancelHander"
     submitText="post"
   />
-  <div class="grid grid-cols-3 h-12">
-    <button
-      class="py-2 txt-center border-b-2"
-      :class="{ 'border-green-300': currentTab === 'character' }"
-      @click="tabChangeHandler('character')"
-    >
-      Characters
-    </button>
-    <button
-      class="py-2 txt-center border-b-2"
-      @click="tabChangeHandler('chat')"
-      :class="{ 'border-green-300': currentTab === 'chat' }"
-    >
-      Chat
-    </button>
-    <button
-      class="py-2 txt-center border-b-2"
-      @click="tabChangeHandler('details')"
-      :class="{ 'border-green-300': currentTab === 'details' }"
-    >
-      Details
-    </button>
-  </div>
+  <TabNav :tabs="tabs" :currentTab="currentTab" @onChange="changeTabHandler" />
   <keep-alive>
     <CharacterWindow
       v-if="currentTab === 'character'"
@@ -56,9 +34,13 @@ import { useStorage } from "../../composables/storage";
 import { useCollection } from "../../composables/firestore";
 import { getUser } from "../../composables/auth";
 import { getDocumentRef } from "../../composables/firestore";
+import TabNav from "../../components/layout/TabNav.vue";
+
 const router = useRouter();
 
-const currentTab = ref("character");
+const tabs = ref(["character", "chat", "details"]);
+const currentTab = ref(tabs.value[0]);
+
 const novelData = ref({
   messages: [],
   characters: [],
@@ -160,7 +142,7 @@ const submitHandler = async () => {
   }
 };
 
-const tabChangeHandler = (tabName) => {
+const changeTabHandler = (tabName) => {
   currentTab.value = tabName;
 };
 

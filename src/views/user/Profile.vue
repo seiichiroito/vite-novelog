@@ -60,6 +60,7 @@
       </div>
     </div>
   </div>
+  <TabNav :tabs="tabs" :currentTab="currentTab" @onChange="changeTabHandler" />
 </template>
 
 <script setup>
@@ -67,7 +68,14 @@ import { ChatIcon } from "@heroicons/vue/outline";
 import BackHeader from "../../components/layout/BackHeader.vue";
 import { functions } from "../../firebase/config";
 import { httpsCallable } from "firebase/functions";
+import TabNav from "../../components/layout/TabNav.vue";
 
+const tabs = ref(["novels", "likes"]);
+const currentTab = ref(tabs.value[0]);
+
+const changeTabHandler = (tabName) => {
+  currentTab.value = tabName;
+};
 const props = defineProps({
   userId: String,
 });
@@ -80,7 +88,7 @@ import {
 import { getUser } from "../../composables/auth";
 import { useRouter } from "vue-router";
 import defaultProfile from "../../assets/default-profile.jpeg";
-import { computed } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import { Timestamp } from "@firebase/firestore";
 
 const router = useRouter();

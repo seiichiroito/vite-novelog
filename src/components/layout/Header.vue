@@ -7,7 +7,7 @@
         <UserIcon class="w-6" />
       </button>
       <img :src="logo" alt="logo" class="w-8" />
-      <button class="p-3">
+      <button class="p-3" @click="infoRoomHandler">
         <InformationCircleIcon class="w-6" />
       </button>
     </div>
@@ -25,6 +25,13 @@ const { currentUser } = getUser();
 
 const profileHandler = () => {
   router.push({ name: "Profile", params: { userId: currentUser.value.uid } });
+};
+
+const infoRoomHandler = () => {
+  router.push({
+    name: "NovelRoom",
+    params: { novelId: "RbMqInO7OqdSqrjPdCPw" },
+  });
 };
 </script>
 

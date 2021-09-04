@@ -9,14 +9,16 @@
     </button>
     <div class="flex-1 grid">
       <button
-        class="flex justify-between items-center"
+        class="flex justify-between items-center gap-2"
         @click="novelRoomHandler"
       >
-        <div class="flex items-center">
-          <p class="font-bold p-2">{{ novel.owner.displayName }}</p>
+        <div class="flex items-center overflow-hidden">
+          <p class="font-bold p-2 flex-shrink-0">
+            {{ novel.owner.displayName }}
+          </p>
           <p class="text-gray-400 text-sm">@{{ novel.owner.username }}</p>
         </div>
-        <p class="text-gray-400 text-sm">{{ novel.createdAt }}</p>
+        <p class="text-gray-400 text-sm flex-shrink-0">{{ novel.createdAt }}</p>
       </button>
       <button class="py-2 text-left" @click="novelRoomHandler">
         {{ novel.title }}

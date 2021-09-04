@@ -21,7 +21,7 @@
       <div class="grid gap-1 justify-items-start">
         <p>{{ message.sender?.displayName }}</p>
         <div class="flex items-end gap-2">
-          <p class="speech-bubble bg-white rounded-2xl p-2">
+          <p class="speech-bubble bg-white rounded-2xl p-2 whitespace-pre-wrap">
             {{ message.body }}
           </p>
           <p class="text-xs text-gray-500 flex-shrink-0">

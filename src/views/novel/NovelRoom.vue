@@ -32,7 +32,7 @@ const { currentUser } = getUser();
 
 const { docRef: currentUserRef } = getDocumentRef(
   "users",
-  currentUser.value.uid
+  currentUser.value?.uid || "NONUSER"
 );
 const { document: novel, isPending } = getDocument("novels", props.novelId);
 

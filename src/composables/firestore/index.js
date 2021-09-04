@@ -3,6 +3,7 @@ import getDocument from "./getDocument";
 import getDocumentRef from "./getDocumentRef";
 import useCollection from "./useCollection";
 import useDocument from "./useDocument";
+import getNextCollection from "./getNextCollection";
 
 export {
   getCollection,
@@ -10,4 +11,5 @@ export {
   getDocumentRef,
   useCollection,
   useDocument,
+  getNextCollection,
 };

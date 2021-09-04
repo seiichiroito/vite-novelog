@@ -5,7 +5,7 @@
       :currentTab="currentTab"
       @onChange="changeTabHandler"
     />
-    <NovelList :novels="formattedNovels" />
+    <NovelList :novels="formattedNovels" @loadDocument="loadDocumentHandler" />
     <router-link
       v-if="currentUser"
       :to="{ name: 'NewNovel' }"
@@ -34,6 +34,7 @@ import {
   getCollection,
   getDocument,
   getDocumentRef,
+  getNextCollection,
 } from "../composables/firestore";
 import { PlusIcon } from "@heroicons/vue/outline";
 import TabNav from "../components/layout/TabNav.vue";
@@ -110,6 +111,13 @@ const formattedNovels = computed(() => {
     };
   });
 });
+
+// Load Document
+const loadDocumentHandler = (lastNovel) => {
+  // console.log("I don't know");
+  // const { documents: nextNovels } = getNextCollection("novels", lastNovel, 5);
+  // console.log(nextNovels);
+};
 </script>
 
 <style></style>

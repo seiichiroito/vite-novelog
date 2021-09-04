@@ -5,7 +5,7 @@
     </div>
 
     <div v-else class="h-full grid justify-center items-center">
-      <p class="text-gray-500">
+      <p class="text-gray-300">
         When you start chatting, it will be showed here.
       </p>
     </div>

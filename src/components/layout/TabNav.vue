@@ -1,5 +1,8 @@
 <template>
-  <div class="grid h-12" :class="[`grid-cols-${tabs.length}`]">
+  <div
+    class="grid h-12 sticky top-0 bg-white"
+    :class="[`grid-cols-${tabs.length}`]"
+  >
     <button
       v-for="tab in tabs"
       :key="tab"

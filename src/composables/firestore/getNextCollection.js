@@ -7,46 +7,20 @@ import {
   onSnapshot,
   orderBy,
   query,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
-const getCollection = (
-  collectionName,
-  filterQuery,
-  secondFilterQuery,
-  orderQuery
-) => {
+const getNextCollection = (collectionName, lastDoc, limitNumber) => {
   const error = ref(null);
   const documents = ref([]);
 
-  let queryData;
-
-  if (filterQuery && secondFilterQuery) {
-    queryData = query(
-      collection(db, collectionName),
-      where(...filterQuery),
-      where(...secondFilterQuery),
-      limit(100)
-    );
-  } else if (filterQuery) {
-    queryData = query(
-      collection(db, collectionName),
-      where(...filterQuery),
-      limit(100)
-    );
-  } else if (orderQuery) {
-    queryData = query(
-      collection(db, collectionName),
-      orderBy(orderQuery, "desc"),
-      limit(100)
-    );
-  } else {
-    queryData = query(
-      collection(db, collectionName),
-      orderBy("createdAt", "desc"),
-      limit(100)
-    );
-  }
+  const queryData = query(
+    collection(db, collectionName),
+    orderBy("createdAt", "desc"),
+    limit(limitNumber),
+    startAfter(lastDoc)
+  );
 
   const unSubscribe = onSnapshot(
     queryData,
@@ -77,13 +51,11 @@ const getCollection = (
     }
   );
 
-  const loadMore = () => {};
-
   watchEffect((onInvalidate) => {
     onInvalidate(() => unSubscribe());
   });
 
-  return { error, documents, loadMore };
+  return { error, documents };
 };
 
-export default getCollection;
+export default getNextCollection;

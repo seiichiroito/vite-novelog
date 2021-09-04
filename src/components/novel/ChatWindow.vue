@@ -1,6 +1,9 @@
 <template>
   <main class="bg-blue-200">
-    <div class="overflow-scroll max-w-3xl mx-auto h-newMain" ref="mainChat">
+    <div
+      class="overflow-scroll max-w-3xl mx-auto h-newMain px-2 py-4"
+      ref="mainChat"
+    >
       <MainChat :messages="messages" />
     </div>
   </main>
@@ -47,6 +50,7 @@ import Room from "../message/Room.vue";
 import MainChat from "../message/MainChat.vue";
 import { computed, ref } from "@vue/reactivity";
 import { Timestamp } from "@firebase/firestore";
+import { onUpdated } from "@vue/runtime-core";
 
 const props = defineProps({
   novel: Object,
@@ -56,6 +60,11 @@ const emit = defineEmits(["onInputSubmit"]);
 
 const inputText = ref("");
 const selectedCharacter = ref("");
+
+const mainChat = ref(null);
+onUpdated(() => {
+  mainChat.value.scrollTop = mainChat.value.scrollHeight;
+});
 
 const messages = computed(() => {
   return props.novel.messages.map((message) => {

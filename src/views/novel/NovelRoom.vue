@@ -100,6 +100,10 @@ const playHandler = () => {
 };
 
 const forwardHandler = () => {
+  if (isPending.value) {
+    return;
+  }
+
   if (currentIndex.value >= novel.value.messages.length) {
     return;
   }

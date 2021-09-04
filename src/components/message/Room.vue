@@ -24,7 +24,10 @@
     </div>
   </header>
   <main class="bg-blue-200">
-    <div class="overflow-scroll max-w-3xl mx-auto h-main" ref="mainChat">
+    <div
+      class="overflow-scroll max-w-3xl mx-auto h-main px-2 py-8"
+      ref="mainChat"
+    >
       <MainChat :messages="room?.messages" />
     </div>
   </main>
@@ -89,7 +92,7 @@ import { useRouter } from "vue-router";
 import { ArrowLeftIcon } from "@heroicons/vue/outline";
 import { ref } from "@vue/reactivity";
 import defaultProfile from "../../assets/default-profile.jpeg";
-import { onUpdated, watchEffect } from "@vue/runtime-core";
+import { onUpdated, watch, watchEffect } from "@vue/runtime-core";
 import MainChat from "./MainChat.vue";
 
 const props = defineProps({

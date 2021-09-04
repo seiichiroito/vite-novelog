@@ -154,6 +154,7 @@ const submitHandler = async () => {
       title: novelData.value.title,
       favorited: [],
     });
+    router.replace({ name: "Home" });
   } catch (err) {
     console.log(error.value);
   }

@@ -2,12 +2,10 @@
   <li class="flex border gap-4 px-4 items-center">
     <button @click="profileHandler">
       <img
-        v-if="novel.owner.photoURL"
-        :src="novel.owner.photoURL"
+        :src="novel.owner.photoURL || defaultProfile"
         alt="novel"
         class="w-12 h-12 rounded-full object-cover"
       />
-      <div v-else class="w-12 h-12 rounded-full object-cover bg-gray-300"></div>
     </button>
     <div class="flex-1 grid">
       <button
@@ -73,6 +71,7 @@ import { getDocument } from "../../composables/firestore";
 import { getUser } from "../../composables/auth";
 import { httpsCallable } from "firebase/functions";
 import { functions } from "../../firebase/config";
+import defaultProfile from "../../assets/default-profile.jpeg";
 
 const { currentUser } = getUser();
 

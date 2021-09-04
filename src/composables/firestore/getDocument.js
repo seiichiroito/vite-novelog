@@ -15,6 +15,7 @@ const getDocument = (collectionName, id) => {
     async (snap) => {
       // isPending.value = true;
       if (!snap.data()) {
+        console.log("HERE");
         error.value = "that document does not exist";
         return;
       }

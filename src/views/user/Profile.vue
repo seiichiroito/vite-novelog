@@ -61,6 +61,7 @@
     </div>
   </div>
   <TabNav :tabs="tabs" :currentTab="currentTab" @onChange="changeTabHandler" />
+  <NovelList :novels="formattedNovels" />
 </template>
 
 <script setup>
@@ -69,6 +70,8 @@ import BackHeader from "../../components/layout/BackHeader.vue";
 import { functions } from "../../firebase/config";
 import { httpsCallable } from "firebase/functions";
 import TabNav from "../../components/layout/TabNav.vue";
+import NovelList from "../../components/novel/NovelList.vue";
+import { formatDistanceToNow } from "date-fns";
 
 const tabs = ref(["novels", "likes"]);
 const currentTab = ref(tabs.value[0]);
@@ -112,6 +115,37 @@ const { documents: follower } = getCollection("users", [
   "array-contains",
   userRef.value,
 ]);
+
+const { documents: myNovels } = getCollection("novels", [
+  "owner",
+  "==",
+  userRef.value,
+]);
+
+const { documents: likeNovels } = getCollection("novels", [
+  "favorited",
+  "array-contains",
+  currentUser.value.uid,
+]);
+
+const filteredNovels = computed(() => {
+  switch (currentTab.value) {
+    case "novels":
+      return myNovels.value;
+    case "likes":
+      return likeNovels.value;
+      return;
+  }
+});
+
+const formattedNovels = computed(() => {
+  return filteredNovels.value.map((novel) => {
+    return {
+      ...novel,
+      createdAt: formatDistanceToNow(novel.createdAt.toDate()),
+    };
+  });
+});
 
 const backHandler = () => {
   router.go(-1);

@@ -87,6 +87,7 @@ const routes = [
     component: () => import("../views/novel/NovelRoom.vue"),
     props: true,
   },
+  { path: "/:pathMatch(.*)*", redirect: "/" },
 ];
 
 const router = createRouter({

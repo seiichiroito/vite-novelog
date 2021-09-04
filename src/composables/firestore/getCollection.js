@@ -4,11 +4,17 @@ import {
   doc,
   getDoc,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
-const getCollection = (collectionName, filterQuery, secondFilterQuery) => {
+const getCollection = (
+  collectionName,
+  filterQuery,
+  secondFilterQuery,
+  orderQuery
+) => {
   const error = ref(null);
   const documents = ref([]);
 
@@ -22,8 +28,16 @@ const getCollection = (collectionName, filterQuery, secondFilterQuery) => {
     );
   } else if (filterQuery) {
     queryData = query(collection(db, collectionName), where(...filterQuery));
+  } else if (orderQuery) {
+    queryData = query(
+      collection(db, collectionName),
+      orderBy(orderQuery, "desc")
+    );
   } else {
-    queryData = collection(db, collectionName);
+    queryData = query(
+      collection(db, collectionName),
+      orderBy("createdAt", "desc")
+    );
   }
 
   const unSubscribe = onSnapshot(

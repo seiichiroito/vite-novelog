@@ -164,8 +164,11 @@ exports.favoriteNovel = functions.https.onCall(async (data, context) => {
     );
   }
 
+  const updatedFavorited = [...doc.data().favorited, context.auth.uid];
+
   return novel.update({
-    favorited: [...doc.data().favorited, context.auth.uid],
+    favorited: updatedFavorited,
+    favorited_count: updatedFavorited.length,
   });
 });
 
@@ -197,5 +200,6 @@ exports.unFavoriteNovel = functions.https.onCall(async (data, context) => {
 
   return novel.update({
     favorited: updatedFavorited,
+    favorited_count: updatedFavorited.length,
   });
 });

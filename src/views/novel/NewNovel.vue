@@ -135,6 +135,7 @@ const submitHandler = async () => {
       genre: novelData.value.genres,
       title: novelData.value.title,
       favorited: [],
+      favorited_count: 0,
     });
     router.replace({ name: "Home" });
   } catch (err) {

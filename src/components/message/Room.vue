@@ -47,9 +47,28 @@
           <HeartIcon class="w-6" />
           <p>{{ room?.favorited.length }}</p>
         </button>
-        <button class="p-2 flex gap-1 items-center">
-          <i class="pi pi-play text-xl"></i>
-        </button>
+        <div class="flex gap-4">
+          <button
+            class="p-2 flex gap-1 items-center"
+            @click="clickForwardHandler"
+          >
+            <i class="pi pi-fast-forward text-xl"></i>
+          </button>
+          <button
+            v-if="isPausing"
+            class="p-2 flex gap-1 items-center"
+            @click="clickPlayHandler"
+          >
+            <i class="pi pi-play text-xl"></i>
+          </button>
+          <button
+            v-else
+            class="p-2 flex gap-1 items-center"
+            @click="clickPauseHandler"
+          >
+            <i class="pi pi-pause text-xl"></i>
+          </button>
+        </div>
       </div>
       <form v-else class="flex gap-2 px-4" @submit.prevent="submitInputHandler">
         <textarea
@@ -77,6 +96,7 @@ const props = defineProps({
   room: {
     type: Object,
   },
+  isPausing: Boolean,
   novelPage: Boolean,
   messenger: {
     type: Object,
@@ -90,7 +110,7 @@ onUpdated(() => {
   mainChat.value.scrollTop = mainChat.value.scrollHeight;
 });
 
-const emit = defineEmits(["onSubmit"]);
+const emit = defineEmits(["onSubmit", "onPlay", "onPause", "onForward"]);
 
 const inputText = ref("");
 
@@ -143,6 +163,19 @@ const favoriteHandler = async () => {
   } catch (err) {
     console.log(err);
   }
+};
+
+// Play, Forward and Pause
+const clickPauseHandler = () => {
+  emit("onPause");
+};
+
+const clickPlayHandler = () => {
+  emit("onPlay");
+};
+
+const clickForwardHandler = () => {
+  emit("onForward");
 };
 </script>
 

@@ -4,6 +4,10 @@
     @onSubmit="submitHandler"
     :messenger="novel?.owner"
     novelPage
+    :isPausing="isPausing"
+    @onPause="pauseHandler"
+    @onPlay="playHandler"
+    @onForward="forwardHandler"
   />
 </template>
 
@@ -32,6 +36,7 @@ const { docRef: currentUserRef } = getDocumentRef(
 );
 const { document: novel, isPending } = getDocument("novels", props.novelId);
 
+const isPausing = ref(false);
 const delayNovel = ref(null);
 
 watch(isPending, () => {
@@ -45,8 +50,14 @@ watch(isPending, () => {
   };
 });
 const currentIndex = ref(0);
+let timer;
 watchEffect(() => {
   if (isPending.value) {
+    return;
+  }
+
+  if (isPausing.value) {
+    clearTimeout(timer);
     return;
   }
 
@@ -54,7 +65,7 @@ watchEffect(() => {
     return;
   }
 
-  setTimeout(() => {
+  timer = setTimeout(() => {
     delayNovel.value = {
       ...novel.value,
       messages: [
@@ -77,6 +88,30 @@ const submitHandler = async (text) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+// Play and Pause
+const pauseHandler = () => {
+  isPausing.value = true;
+};
+
+const playHandler = () => {
+  isPausing.value = false;
+};
+
+const forwardHandler = () => {
+  if (currentIndex.value >= novel.value.messages.length) {
+    return;
+  }
+  clearTimeout(timer);
+  delayNovel.value = {
+    ...novel.value,
+    messages: [
+      ...delayNovel.value.messages,
+      novel.value.messages[currentIndex.value],
+    ],
+  };
+  currentIndex.value += 1;
 };
 </script>
 

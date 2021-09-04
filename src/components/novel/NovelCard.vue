@@ -54,10 +54,10 @@
             <p class="text-sm">{{ novel.favorited.length }}</p>
           </button>
 
-          <button class="py-3 flex gap-1 items-center text-gray-500">
+          <!-- <button class="py-3 flex gap-1 items-center text-gray-500">
             <ChatAltIcon class="w-3" />
             <p class="text-sm">{{ novel.comments.length }}</p>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>

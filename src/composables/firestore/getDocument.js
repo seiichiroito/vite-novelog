@@ -6,12 +6,14 @@ import { db } from "../../firebase/config";
 const getDocument = (collectionName, id) => {
   const error = ref(null);
   const document = ref(null);
+  const isPending = ref(true);
 
   const docRef = doc(db, collectionName, id);
 
   const unSubscribe = onSnapshot(
     docRef,
     async (snap) => {
+      // isPending.value = true;
       if (!snap.data()) {
         error.value = "that document does not exist";
         return;
@@ -58,10 +60,12 @@ const getDocument = (collectionName, id) => {
         owner,
         subOwner,
       };
+      isPending.value = false;
       error.value = null;
     },
     (err) => {
       error.value = "could not fetch the document";
+      isPending.value = false;
       document.value = null;
     }
   );
@@ -73,6 +77,7 @@ const getDocument = (collectionName, id) => {
   return {
     error,
     document,
+    isPending,
   };
 };
 

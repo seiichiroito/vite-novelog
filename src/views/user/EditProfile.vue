@@ -99,7 +99,7 @@ watch(user, () => {
   formData.value.bio = user.value.bio;
 });
 
-const { url, filePath, uploadImage } = useStorage();
+const { url, filePath, uploadImage } = useStorage("profiles");
 const submitHandler = async () => {
   const { displayName, file, bio } = formData.value;
 
@@ -123,7 +123,7 @@ const submitHandler = async () => {
       return;
     }
 
-    await uploadImage(file);
+    await uploadImage(file, currentUser.value.uid);
 
     //   Update Auth user profile
     await updateProfile(currentUser.value, {

@@ -1,7 +1,7 @@
 <template>
   <main class="bg-blue-200">
     <div class="overflow-scroll max-w-3xl mx-auto h-newMain" ref="mainChat">
-      <MainChat :messages="novel.messages" />
+      <MainChat :messages="messages" />
     </div>
   </main>
   <footer class="h-16">
@@ -22,7 +22,7 @@
         >
           <option selected disabled value="">select</option>
           <option
-            v-for="character in props.novel.characters"
+            v-for="character in novel.characters"
             :key="character.id"
             :value="character.id"
           >
@@ -45,7 +45,7 @@
 <script setup>
 import Room from "../message/Room.vue";
 import MainChat from "../message/MainChat.vue";
-import { ref } from "@vue/reactivity";
+import { computed, ref } from "@vue/reactivity";
 import { Timestamp } from "@firebase/firestore";
 
 const props = defineProps({
@@ -56,6 +56,19 @@ const emit = defineEmits(["onInputSubmit"]);
 
 const inputText = ref("");
 const selectedCharacter = ref("");
+
+const messages = computed(() => {
+  return props.novel.messages.map((message) => {
+    const sender = props.novel.characters.find(
+      (character) => character.id === message.charId
+    );
+
+    return {
+      ...message,
+      sender,
+    };
+  });
+});
 
 const submitInputHandler = () => {
   if (inputText.value === "") {

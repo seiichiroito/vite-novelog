@@ -5,11 +5,17 @@
     @click="selectHandler"
   >
     <div class="flex-shrink-0">
+      <InputImage
+        v-if="mode"
+        @onChange="changeImageHandler"
+        ref="imageFileRef"
+      />
       <img
         v-if="mode"
         class="w-12 h-12 rounded-full object-cover"
         :src="characterForm.photoURL"
         alt="icon"
+        @click="clickImageHandler"
       />
       <img
         v-else
@@ -65,6 +71,8 @@
 
 <script setup>
 import { computed, ref } from "@vue/reactivity";
+import InputImage from "../UI/InputImage.vue";
+import defaultProfile from "../../assets/default-profile.jpeg";
 
 const props = defineProps({
   mode: String,
@@ -73,7 +81,7 @@ const props = defineProps({
     default: () => ({
       name: "",
       bio: "",
-      photoURL: "https://placekitten.com/200/300",
+      photoURL: defaultProfile,
       file: null,
       id: null,
     }),
@@ -105,12 +113,24 @@ const editting = computed(() => {
   return false;
 });
 
+const imageFileRef = ref(null);
+const clickImageHandler = () => {
+  imageFileRef.value.click();
+};
+const changeImageHandler = (file) => {
+  characterForm.value.file = file;
+
+  characterForm.value.photoURL = URL.createObjectURL(file);
+};
+
 const addCharacterHandler = () => {
   emit("onAddSubmit", characterForm);
   characterForm.value = {
     ...characterForm.value,
     displayName: "",
     bio: "",
+    photoURL: defaultProfile,
+    file: null,
   };
 };
 

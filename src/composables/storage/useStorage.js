@@ -5,21 +5,15 @@ import {
   ref as stoRef,
   uploadBytes,
 } from "firebase/storage";
-import { getUser } from "../auth";
 import { storage } from "../../firebase/config";
 
-// const uniqueID = () => {
-//   return "_" + Math.random().toString(36).substr(2, 9);
-// };
-
-const { currentUser } = getUser();
-const useStorage = () => {
+const useStorage = (storageName) => {
   const error = ref(null);
   const url = ref(null);
   const filePath = ref(null);
 
-  const uploadImage = async (file) => {
-    filePath.value = `profiles/${currentUser.value.uid}`;
+  const uploadImage = async (file, fileName) => {
+    filePath.value = `${storageName}/${fileName}`;
 
     const storageRef = stoRef(storage, filePath.value);
     try {

@@ -15,7 +15,7 @@ service cloud.firestore {
     }
     match /characters/{docId} {
       allow read;
-      allow create, udpate: if request.auth != null;
+      allow create, update: if request.auth != null;
     }
   }
 }

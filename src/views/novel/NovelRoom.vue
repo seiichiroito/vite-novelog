@@ -1,6 +1,6 @@
 <template>
   <Room
-    :room="novel"
+    :room="delayNovel"
     @onSubmit="submitHandler"
     :messenger="novel?.owner"
     novelPage
@@ -21,7 +21,7 @@ import {
 
 import { getUser } from "../../composables/auth";
 import { computed, ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { watch, watchEffect } from "@vue/runtime-core";
 import { useDocument } from "../../composables/firestore";
 import { v4 as uuid } from "uuid";
 const { currentUser } = getUser();
@@ -30,8 +30,41 @@ const { docRef: currentUserRef } = getDocumentRef(
   "users",
   currentUser.value.uid
 );
-const { document: novel } = getDocument("novels", props.novelId);
+const { document: novel, isPending } = getDocument("novels", props.novelId);
 
+const delayNovel = ref(null);
+
+watch(isPending, () => {
+  if (isPending.value) {
+    return;
+  }
+
+  delayNovel.value = {
+    ...novel.value,
+    messages: [],
+  };
+});
+const currentIndex = ref(0);
+watchEffect(() => {
+  if (isPending.value) {
+    return;
+  }
+
+  if (currentIndex.value >= novel.value.messages.length) {
+    return;
+  }
+
+  setTimeout(() => {
+    delayNovel.value = {
+      ...novel.value,
+      messages: [
+        ...delayNovel.value.messages,
+        novel.value.messages[currentIndex.value],
+      ],
+    };
+    currentIndex.value += 1;
+  }, 3000);
+});
 const { updateField } = useDocument("rooms", props.roomId);
 
 const submitHandler = async (text) => {

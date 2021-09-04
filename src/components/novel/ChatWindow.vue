@@ -20,7 +20,7 @@
             focus:outline-none focus:bg-white focus:border-gray-500
           "
         >
-          <option selected disabled value="">select character</option>
+          <option selected disabled value="">select</option>
           <option
             v-for="character in props.novel.characters"
             :key="character.id"

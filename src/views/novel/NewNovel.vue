@@ -2,7 +2,7 @@
   <PostHeader
     @onSubmit="submitHandler"
     @onCancel="cancelHander"
-    submitText="preview"
+    submitText="post"
   />
   <div class="grid grid-cols-3 h-12">
     <button
@@ -40,7 +40,7 @@
       :novel="novelData"
       @onInputSubmit="inputHandler"
     />
-    <DetailsWindow v-else />
+    <DetailsWindow v-else @onChange="changeDetailsHandler" />
   </keep-alive>
 </template>
 
@@ -59,7 +59,7 @@ const novelData = ref({
   messages: [],
   characters: [],
   title: "",
-  genre: ["horror"],
+  genres: [],
   id: uuid(),
   createdAt: "",
 });
@@ -68,7 +68,9 @@ const cancelHander = () => {
   router.go(-1);
 };
 
-const submitHandler = () => {};
+const submitHandler = () => {
+  console.log(novelData);
+};
 
 const tabChangeHandler = (tabName) => {
   currentTab.value = tabName;
@@ -110,6 +112,15 @@ const inputHandler = (inputData) => {
     sender,
     id: uuid(),
   });
+};
+
+//? Details
+const changeDetailsHandler = (detailsData) => {
+  novelData.value = {
+    ...novelData.value,
+    title: detailsData.title,
+    genres: detailsData.genres,
+  };
 };
 </script>
 

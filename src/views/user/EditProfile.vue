@@ -10,8 +10,8 @@
       <div class="absolute inset-0 bg-gray-300"></div>
       <div class="relative flex gap-4">
         <img
-          v-if="formData.previewImage"
-          :src="formData.previewImage"
+          v-if="formData.photoURL"
+          :src="formData.photoURL"
           :alt="currentUser?.displayName"
           class="w-12 h-12 rounded-full"
         />
@@ -35,13 +35,7 @@
           @click="clickImageHandler"
         >
           <PhotographIcon class="w-8 text-gray-800" />
-          <input
-            type="file"
-            accept="image/png, image/jpeg, image/jpg"
-            @change="changeImageHandler"
-            hidden
-            ref="imageFileRef"
-          />
+          <InputImage @onChange="changeImageHandler" ref="imageFileRef" />
         </div>
       </div>
     </div>
@@ -73,6 +67,8 @@ import { updateProfile } from "@firebase/auth";
 import { watch } from "@vue/runtime-core";
 import { PhotographIcon } from "@heroicons/vue/outline";
 import PostHeader from "../../components/layout/PostHeader.vue";
+import InputImage from "../../components/UI/InputImage.vue";
+
 const { currentUser } = getUser();
 
 const { updateDocument, error } = useDocument("users", currentUser.value.uid);
@@ -81,7 +77,7 @@ const { document: user } = getDocument("users", currentUser.value.uid);
 const formData = ref({
   displayName: currentUser.value.displayName,
   bio: "",
-  previewImage: currentUser.value.photoURL,
+  photoURL: currentUser.value.photoURL,
 });
 
 const isPending = ref(false);
@@ -105,13 +101,13 @@ watch(user, () => {
 
 const { url, filePath, uploadImage } = useStorage();
 const submitHandler = async () => {
-  const { displayName, image, bio } = formData.value;
+  const { displayName, file, bio } = formData.value;
 
   isPending.value = true;
 
   try {
     //   Upload Image
-    if (!image) {
+    if (!file) {
       //   Update Auth user profile
       await updateProfile(currentUser.value, {
         displayName: displayName,
@@ -126,7 +122,8 @@ const submitHandler = async () => {
 
       return;
     }
-    await uploadImage(image);
+
+    await uploadImage(file);
 
     //   Update Auth user profile
     await updateProfile(currentUser.value, {
@@ -164,26 +161,10 @@ const clickImageHandler = () => {
 const mimeTypes = ["image/png", "image/jpeg", "image/jpg"];
 const maxSize = 5 * 1024 * 1024;
 
-const changeImageHandler = (e) => {
-  const [file] = e.target.files;
+const changeImageHandler = (file) => {
+  formData.value.file = file;
 
-  if (!file) {
-    return;
-  }
-
-  //   File Type validate
-
-  if (!mimeTypes.includes(file.type)) {
-    return;
-  }
-
-  // Size validate
-  if (file.size > maxSize) {
-    return;
-  }
-  formData.value.image = file;
-
-  formData.value.previewImage = URL.createObjectURL(file);
+  formData.value.photoURL = URL.createObjectURL(file);
 };
 </script>
 

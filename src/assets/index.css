@@ -22,7 +22,6 @@
   transform: rotate(-30deg);
 }
 
-.screenSize {
-  height: calc(100vh - 3rem - 4rem);
-  height: calc(-webkit-fill-available - 3rem - 4rem);
+* {
+  appearance: none;
 }

@@ -1,7 +1,10 @@
 <template>
   <div
     class="grid h-12 sticky top-0 bg-white"
-    :class="[`grid-cols-${tabs.length}`]"
+    :class="{
+      'grid-cols-2': tabs.length === 2,
+      'grid-cols-3': tabs.length === 3,
+    }"
   >
     <button
       v-for="tab in tabs"

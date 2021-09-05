@@ -7,6 +7,16 @@
   <router-view></router-view>
 </template>
 
-<script setup></script>
+<script setup>
+import { provide, readonly, ref } from "@vue/runtime-core";
+const notification = ref(null);
+
+const setNotification = (value) => {
+  notification.value = value;
+};
+provide("notification", notification, readonly(notification));
+
+provide("setNotification", setNotification);
+</script>
 
 <style></style>

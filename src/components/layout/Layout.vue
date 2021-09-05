@@ -1,5 +1,6 @@
 <template>
   <Header />
+  <!-- {{ notification }} -->
   <main class="h-main overflow-scroll max-w-3xl mx-auto">
     <slot></slot>
   </main>
@@ -9,4 +10,6 @@
 <script setup>
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
+import { inject } from "@vue/runtime-core";
+const notification = inject("notification");
 </script>

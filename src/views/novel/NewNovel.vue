@@ -58,7 +58,7 @@ const { docRef: currentUserRef } = getDocumentRef(
 );
 
 const isPending = ref(false);
-
+import uniqueID from "../../library/util/uniqueID";
 const submitHandler = async () => {
   isPending.value = true;
 
@@ -110,18 +110,33 @@ const submitHandler = async () => {
   );
 
   // uploadedCharacters
-  const formattedMessages = novelData.value.messages.map((message) => {
-    const sender = uploadedCharacters.find((character) => {
-      return character.id === message.charId;
-    });
+  const formattedMessages = await Promise.all(
+    novelData.value.messages.map(async (message) => {
+      const { url, filePath, uploadImage } = useStorage("novels");
 
-    return {
-      id: message.id,
-      body: message.body,
-      createdAt: message.createdAt,
-      senderRef: sender.ref,
-    };
-  });
+      const sender = uploadedCharacters.find((character) => {
+        return character.id === message.charId;
+      });
+
+      if (message.file) {
+        await uploadImage(message.file, message.file.name + uniqueID());
+        return {
+          id: message.id,
+          photoURL: url.value,
+          photoURLPath: filePath.value,
+          createdAt: message.createdAt,
+          senderRef: sender.ref,
+        };
+      } else {
+        return {
+          id: message.id,
+          body: message.body,
+          createdAt: message.createdAt,
+          senderRef: sender.ref,
+        };
+      }
+    })
+  );
 
   const { addDocument, error } = useCollection("novels");
   try {

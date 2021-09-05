@@ -21,9 +21,13 @@
       <div class="grid gap-1 justify-items-start">
         <p>{{ message.sender?.displayName }}</p>
         <div class="flex items-end gap-2">
-          <p class="speech-bubble bg-white rounded-2xl p-2 whitespace-pre-wrap">
+          <p
+            v-if="message.body"
+            class="speech-bubble bg-white rounded-2xl p-2 whitespace-pre-wrap"
+          >
             {{ message.body }}
           </p>
+          <img v-if="message.photoURL" :src="message.photoURL" class="w-2/3" />
           <p class="text-xs text-gray-500 flex-shrink-0">
             {{ message.createdAt }}
           </p>

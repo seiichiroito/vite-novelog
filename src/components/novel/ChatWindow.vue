@@ -32,6 +32,10 @@
             {{ character.displayName }}
           </option>
         </select>
+        <button class="p-2" @click="clickImageHandler">
+          <i class="pi pi-image text-xl"></i>
+          <InputImage ref="imageFileRef" @onChange="changeImageHandler" />
+        </button>
         <textarea
           class="flex-1 border p-1 rounded-full resize-none"
           rows="1"
@@ -63,7 +67,9 @@ const selectedCharacter = ref("");
 
 const mainChat = ref(null);
 onUpdated(() => {
-  mainChat.value.scrollTop = mainChat.value.scrollHeight;
+  setTimeout(() => {
+    mainChat.value.scrollTop = mainChat.value.scrollHeight;
+  }, 100);
 });
 
 const messages = computed(() => {
@@ -95,6 +101,32 @@ const submitInputHandler = () => {
   });
 
   inputText.value = "";
+};
+
+// Image Handle
+import InputImage from "../UI/InputImage.vue";
+
+const imageFileRef = ref(null);
+
+const clickImageHandler = () => {
+  imageFileRef.value.click();
+};
+
+const changeImageHandler = (file) => {
+  if (!file) {
+    return;
+  }
+
+  if (!selectedCharacter.value) {
+    return;
+  }
+
+  emit("onInputSubmit", {
+    file: file,
+    photoURL: URL.createObjectURL(file),
+    charId: selectedCharacter.value,
+    createdAt: Timestamp.fromDate(new Date()),
+  });
 };
 </script>
 

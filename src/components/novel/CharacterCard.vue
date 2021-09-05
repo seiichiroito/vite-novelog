@@ -64,7 +64,6 @@
     </div>
     <div class="grid gap-4 flex-1" v-else>
       <p>{{ character.displayName }}</p>
-      <!-- <p v-if="mode">{{ character.bio }}</p> -->
     </div>
   </div>
 </template>

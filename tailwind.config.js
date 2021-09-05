@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       spacing: {
-        main: "calc(100vh - 3rem - 4rem)", //minus header and footer height
-        newMain: "calc(100vh - 3rem - 3rem - 4rem)",
+        main: "calc(var(--vh, 1vh) * 100 - 3rem - 4rem)", //minus header and footer height
+        newMain: "calc(var(--vh, 1vh) * 100 - 3rem - 3rem - 4rem)",
         half: "50vh",
         messageCard: "6rem",
       },

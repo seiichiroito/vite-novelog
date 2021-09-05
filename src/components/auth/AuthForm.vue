@@ -10,6 +10,7 @@
           type="text"
           placeholder="display name"
           v-model="formData.displayName"
+          required
           class="
             border border-gray-500
             py-2
@@ -22,6 +23,7 @@
           type="email"
           placeholder="email"
           v-model="formData.email"
+          required
           class="
             border border-gray-500
             py-2
@@ -34,6 +36,7 @@
           type="password"
           placeholder="password"
           v-model="formData.password"
+          required
           class="
             border border-gray-500
             py-2
@@ -123,7 +126,7 @@ const submitHandler = () => {
 const submitOAuthHandler = async (providerName) => {
   try {
     const user = await signupWithOAuth(providerName);
-    console.log(user);
+    // console.log(user);
   } catch (err) {
     console.log(err);
   }

@@ -10,13 +10,31 @@
 <script setup>
 import { provide, readonly, ref } from "@vue/runtime-core";
 const notification = ref(null);
+let timer;
 
-const setNotification = (value) => {
-  notification.value = value;
+const setNotification = ({ type, message }) => {
+  clearTimeout(timer);
+
+  notification.value = {
+    type,
+    message,
+  };
+
+  timer = setTimeout(() => {
+    notification.value = null;
+  }, 5000);
 };
+
+const clearNotification = () => {
+  notification.value = null;
+  clearTimeout(timer);
+};
+
 provide("notification", notification, readonly(notification));
 
 provide("setNotification", setNotification);
+
+provide("clearNotification", clearNotification);
 </script>
 
 <style></style>

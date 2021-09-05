@@ -42,6 +42,42 @@ exports.updateUserProfile = functions.https.onCall((data, context) => {
   });
 });
 
+exports.updateUsername = functions.https.onCall(async (data, context) => {
+  // check auth
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "only authenticated users can update profile"
+    );
+  }
+
+  if (data.username.length < 3) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "username must be longer then 3 characters"
+    );
+  }
+
+  const allUsersRef = admin.firestore().collection("users");
+
+  const snapshot = await allUsersRef
+    .where("username", "==", data.username)
+    .get();
+
+  if (!snapshot.empty) {
+    throw new functions.https.HttpsError(
+      "already-exists",
+      "the username is already used"
+    );
+  }
+
+  const user = admin.firestore().collection("users").doc(context.auth.uid);
+
+  return user.update({
+    username: data.username,
+  });
+});
+
 exports.follow = functions.https.onCall(async (data, context) => {
   // check auth
   if (!context.auth) {
